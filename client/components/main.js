@@ -44,10 +44,7 @@ class Main extends Component {
       weather,
       sortObj,
       isFetching,
-      pages = Math.ceil(cityIds.length / 5),
-      sortedWeather = sortObj && sortObj.type
-                      ? weather.sort(sortField(sortObj.field, sortObj.type))
-                      : weather
+      pages,
     } = this.props
     return (
       <div className='app'>
@@ -65,7 +62,7 @@ class Main extends Component {
           <WeatherList
             addToFavorites={addToFavorites}
             fetchExpandedCityWeather={fetchExpandedCityWeather}
-            weather={sortedWeather}
+            weather={weather}
             favorites={favorites}
           />
           {
@@ -92,14 +89,18 @@ class Main extends Component {
 }
 
 function mapStateToProps (state) {
+  const { sortObj, weather, cityIds } = state.req
   return {
-    weather: state.req.weather,
+    weather: sortObj && sortObj.type
+                    ? weather.sort(sortField(sortObj.field, sortObj.type))
+                    : weather,
     cityIds: state.req.cityIds,
     weatherLocal: state.req.weatherLocal,
     page: state.req.page,
     sortObj: state.req.sortObj,
     isFetching: state.req.isFetching,
     favorites: state.req.favorites,
+    pages: Math.ceil(cityIds.length / 5)
   }
 }
 
