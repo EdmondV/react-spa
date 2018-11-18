@@ -2,6 +2,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+  background-color: #ffffff;
 }
 
 input {
@@ -21,7 +22,7 @@ button {
   overflow: scroll;
   height: 100%;
   width: 100%;
-  background-color: #2A363B;
+  background-color: #ffffff;
 }
 
 .app {

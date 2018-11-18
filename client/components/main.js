@@ -1,119 +1,146 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import WeatherList from './weather-list'
-import SearchModule from './search-module'
-import SortModule from './sort-module'
-import { sortField } from '../helpers/sort-helper'
-import RequestsActions from '../redux/request-redux'
-import PreloaderIcon, {ICON_TYPE} from 'react-preloader-icon'
-import Aside from './aside'
-import Pagination from './pagination'
+import styled from 'styled-components'
 import '../style/main.css'
 
+const assets = importAll(
+  require.context('../assets', false, /\.(png|jpe?g|svg)$/),
+  '../assets',
+);
+
+function importAll(r, path) {
+  const images = {};
+  r.keys().map(item => (images[item.replace(path, '')] = r(item)));
+  return images;
+}
+
+const Header = styled.div`
+  width: 100%;
+  height: 362px;
+
+  background-image: url(${assets['./bitmap_2.jpg']});
+  background-size: cover;
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+`;
+
+const CentralBlock = styled.div`
+  width: auto;
+  margin-bottom: 5%;
+
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+
+  color: white;
+  h1 {
+    font-family: HelveticaNeue;
+    font-size: 36px;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: #ffffff;
+    margin: 0 0 5px 0;
+  }
+  h4 {
+    opacity: 0.81;
+    font-family: HelveticaNeue;
+    font-size: 11px;
+    font-weight: 500;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: #ffffff;
+    margin: 0;
+  }
+  .add-news {
+    padding-bottom: 20px;
+    position: relative;
+    width: 189px;
+    height: 3px;
+    object-fit: contain;
+    font-family: HelveticaNeue;
+    font-size: 11px;
+    font-weight: 500;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: #ffffff;
+    margin-top: 100px;
+    cursor: pointer;
+  }
+  .add-news > span {
+    position: absolute;
+    right: 0px;
+  }
+`;
+
+const AddNews = styled.div`
+  padding-bottom: 10px;
+  border-bottom: 1px solid white;
+  opacity: ${({ show }) => show ? 1 : 0};
+  transition: opacity 200ms;
+`;
+
+const Modal = styled.div`
+  width: 400px;
+  height: 520px;
+  position: absolute;
+
+  opacity: ${({ show }) => show ? 1 : 0};
+  transition: opacity 200ms;
+`;
+
+const months = ['Января', 'Февраля', 'Марта', 'Апреля', 'Мая', 'Июня', 'Июля', 'Августа', 'Сентября', 'Октября', 'Ноября', 'Декабря'];
+
+const days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+
+function createDate(date) {
+  const month = months[date.getMonth()];
+  const day = days[date.getDay()];
+
+  return `${date.getDate()} ${month} ${date.getFullYear()}, ${day}, ${date.getHours()}:${date.getMinutes()}`;
+}
+
 class Main extends Component {
-  componentDidMount () {
-    const {
-      fetchCityWeatherByLocation,
-      fetchCityWeatherByIds,
-      weatherLocal,
-      updateState,
-      weather,
-      cityIds,
-    } = this.props
-    if (!weather.length && cityIds.length) {
-      fetchCityWeatherByIds()
-    }
-    if ("geolocation" in navigator && !weatherLocal) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        const lat = position.coords.latitude.toFixed(3),
-              lon = position.coords.longitude.toFixed(3)
-        return fetchCityWeatherByLocation({ lat: lat, lon: lon })
-      })
-    }
+  constructor() {
+    super();
+    this.state = {
+      isModalOpen: false,
+    };
+  }
+  openModal () {
+
   }
   render () {
-    const {
-      fetchExpandedCityWeather,
-      fetchCityWeatherByIds,
-      addToFavorites,
-      weatherLocal,
-      updateState,
-      cityIds,
-      favorites,
-      page,
-      weather,
-      sortObj,
-      isFetching,
-      pages,
-    } = this.props
+    const date = new Date();
+    const { isModalOpen } = this.state;
     return (
-      <div className='app'>
-        <Aside
-          weatherLocal={weatherLocal}
-        />
-        <div className='right-block'>
-          <div className='modules'>
-            <SearchModule weather={weather} />
-            <SortModule
-              sortObj={sortObj}
-              updateState={updateState}
-            />
-          </div>
-          <WeatherList
-            addToFavorites={addToFavorites}
-            fetchExpandedCityWeather={fetchExpandedCityWeather}
-            weather={weather}
-            favorites={favorites}
-          />
-          {
-            !isFetching &&
-              <PreloaderIcon
-                type={ICON_TYPE.TAIL_SPIN}
-                size={80}
-                strokeWidth={8}
-                strokeColor="#3153c5"
-                duration={800}
-                className='main-preloader'
-              />
-          }
-          <Pagination
-            page={page}
-            pages={pages}
-            updateState={updateState}
-            fetchCityWeatherByIds={fetchCityWeatherByIds}
-          />
-        </div>
-      </div>
+      <Header>
+        <CentralBlock>
+          <h1>МИРОВЫЕ НОВОСТИ</h1>
+          <h4>{createDate(date).toUpperCase()}</h4>
+          <AddNews className='add-news' show={!isModalOpen} onClick={this.openModal}>ДОБАВИТЬ НОВОСТЬ<span>+</span></AddNews>
+          <Modal show={isModalOpen} />
+        </CentralBlock>
+      </Header>
     )
   }
 }
 
 function mapStateToProps (state) {
-  const { sortObj, weather, cityIds } = state.req
-  return {
-    weather: sortObj && sortObj.type
-                    ? weather.sort(sortField(sortObj.field, sortObj.type))
-                    : weather,
-    cityIds: state.req.cityIds,
-    weatherLocal: state.req.weatherLocal,
-    page: state.req.page,
-    sortObj: state.req.sortObj,
-    isFetching: state.req.isFetching,
-    favorites: state.req.favorites,
-    pages: Math.ceil(cityIds.length / 5)
-  }
+  // const { sortObj, weather, cityIds } = state.req
+  return {}
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateState: (data) => dispatch(RequestsActions.updateState(data)),
-    fetchCityWeatherByIds: (page) => dispatch(RequestsActions.fetchCityWeatherByIds(page)),
-    fetchCityWeatherByLocation: (location) =>
-      dispatch(RequestsActions.fetchCityWeatherByLocation(location)),
-    fetchExpandedCityWeather: (id) =>
-      dispatch(RequestsActions.fetchExpandedCityWeather(id)),
-    addToFavorites: (id) => dispatch(RequestsActions.addToFavorites(id)),
-  }
-}
+const mapDispatchToProps = (dispatch) => ({
+
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main)

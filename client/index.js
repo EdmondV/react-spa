@@ -1,22 +1,27 @@
-import React from 'react'
-import { render } from 'react-dom'
-import { BrowserRouter, Switch, Route } from 'react-router-dom'
-import Main from './components/main'
-import Info from './components/info'
-import { Provider } from 'react-redux'
-import { reducers } from './redux/index'
-import { sagas } from './sagas/index'
-import store from './store'
+import React from 'react';
+import { render } from 'react-dom';
+import { BrowserRouter, Route } from 'react-router-dom';
+import Main from './components/main';
+import Content from './components/content';
+import Pagination from './components/pagination';
+import NavBar from './components/navBar';
+import Footer from './components/footer';
+import { Provider } from 'react-redux';
+import { reducers } from './redux/index';
+import store from './store';
 
-const Store = store(reducers, sagas)
+const Store = store(reducers)
 render(
   <Provider store={Store}>
     <BrowserRouter>
-      <Switch>
-        <Route exact path='/' component={Main} />
-        <Route path='/info' component={Info} />
-      </Switch>
+      <div>
+        <Main />
+        <NavBar />
+        <Route path='/' component={Content} />
+        <Pagination />
+        <Footer />
+      </div>
     </BrowserRouter>
   </Provider>,
-  document.getElementById('root')
+  document.getElementById('root'),
 );

@@ -1,26 +1,43 @@
-import React from 'react'
-import Button from '../common/button'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { Link } from "react-router-dom";
+import styled from 'styled-components';
 
-const Pagination = ({ page, pages, updateState, fetchCityWeatherByIds }) => {
-  return (
-    <span className='pagination'>
-    {
-      page > 0 &&
-      <Button onClick={() => {
-        updateState({ page: page - 1, isFetching: false })
-        fetchCityWeatherByIds(page - 1)
-      }}>{'<- Prev '}</Button>
-    }
-    <h2>{page + 1}</h2>
-    {
-      page < pages - 1 &&
-      <Button onClick={() => {
-        updateState({ page: page + 1, isFetching: false })
-        fetchCityWeatherByIds(page + 1)
-      }}>{' Next ->'}</Button>
-    }
-    </span>
-  )
+const PaginationWrapper = styled.div`
+  padding: 0 150px;
+  margin: 15px 0;
+
+  display: flex;
+  flex-direction:row;
+  justify-content: space-between;
+  a {
+    margin-left: 10px;
+    text-decoration: none;
+  }
+`;
+
+class Pagination extends Component {
+  render () {
+    return (
+      <PaginationWrapper>
+        <span>More news</span>
+        <div>
+          <Link to={`/1`}>1</Link>
+          <Link to={`/2`}>2</Link>
+          <Link to={`/3`}>3</Link>
+        </div>
+      </PaginationWrapper>
+    )
+  }
 }
 
-export default Pagination
+function mapStateToProps (state) {
+  // const { sortObj, weather, cityIds } = state.req
+  return {}
+}
+
+const mapDispatchToProps = (dispatch) => ({
+
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Pagination)
