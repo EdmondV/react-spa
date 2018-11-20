@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import Button from '../common/button';
 
 const NavBarWrapper = styled.div`
-  padding: 0 150px;
+  padding: 0;
+  margin: 23px 0;
 
   display: flex;
   flex-direction: row;
@@ -16,39 +16,12 @@ const NavBarWrapper = styled.div`
 
 const types = ['Все', 'Политика', 'Спорт', 'Происшествия', 'Наука', 'Бизнес'];
 
-class NavBar extends Component {
-  constructor() {
-    super();
-    this.state = {
-      index: 0,
-    };
-  }
-  render () {
-    return (
-      <NavBarWrapper>
-        {
-          types.map((t, i) => {
-            <Button
-              key={t}
-              setActive={() => this.setState({ index: i })}
-              active={this.state.index === i}
-            >
-              {t}
-            </Button>
-          })
-        }
-      </NavBarWrapper>
-    )
-  }
-}
+const NavBar = ({ toggleCategory, selectedCategory, className }) => (
+  <NavBarWrapper className={className}>
+    {
+      types.map((t, i) => <Button onClick={() => toggleCategory(t)} key={t} active={selectedCategory === t}>{t}</Button>)
+    }
+  </NavBarWrapper>
+)
 
-function mapStateToProps (state) {
-  // const { sortObj, weather, cityIds } = state.req
-  return {}
-}
-
-const mapDispatchToProps = (dispatch) => ({
-
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(NavBar)
+export default NavBar;

@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux'
 
 const reducers = combineReducers({
-  req: require('./request-redux').reducer
+  req: require('./redux').reducer
 })
 
 export { reducers }

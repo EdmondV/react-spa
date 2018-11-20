@@ -1,43 +1,48 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
+import React, { PureComponent } from 'react';
 import { Link } from "react-router-dom";
 import styled from 'styled-components';
 
 const PaginationWrapper = styled.div`
-  padding: 0 150px;
-  margin: 15px 0;
+  padding: 0;
+  margin: 30px 0;
 
   display: flex;
   flex-direction:row;
   justify-content: space-between;
   a {
-    margin-left: 10px;
+    margin-left: 43px;
     text-decoration: none;
+  }
+  span {
+    font-family: HelveticaNeue;
+    font-size: 16px;
+    font-weight: 500;
+    color: #000000;
   }
 `;
 
-class Pagination extends Component {
+class Pagination extends PureComponent {
+  renderLinks(news) {
+    const quantity = Math.ceil(news.length / 3);
+
+    if (quantity === 1) return null;
+
+    const links = [];
+    for (let i = 1; i <= quantity; i++) {
+      links.push(<Link key={'link' + i} to={`/?page=${i}`}>{i}</Link>);
+    }
+    return links;
+  }
   render () {
     return (
-      <PaginationWrapper>
-        <span>More news</span>
+      <PaginationWrapper className={this.props.className}>
+        <span>Больше новостей</span>
         <div>
-          <Link to={`/1`}>1</Link>
-          <Link to={`/2`}>2</Link>
-          <Link to={`/3`}>3</Link>
+          {this.renderLinks(this.props.news)}
         </div>
       </PaginationWrapper>
     )
   }
 }
 
-function mapStateToProps (state) {
-  // const { sortObj, weather, cityIds } = state.req
-  return {}
-}
-
-const mapDispatchToProps = (dispatch) => ({
-
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(Pagination)
+export default Pagination;

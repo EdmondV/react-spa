@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 const CustomButton = styled.div`
   display: flex;
-  height: 50px;
+  height: 40px;
   justify-content: center;
   align-items: center;
   color: ${({ active }) => active ? '#f9621e' : '#d8d8d8'};
@@ -12,9 +12,9 @@ const CustomButton = styled.div`
 
 class Button extends PureComponent {
 	render() {
-		const { children, setActive, type, active } = this.props;
+		const { children, onClick, active } = this.props;
 		return (
-			<CustomButton active={active} onClick={setActive}>{children}</CustomButton>
+			<CustomButton active={active} onClick={onClick}>{children}</CustomButton>
 		)
 	}
 }
